@@ -63,9 +63,9 @@ class Renderer:
         if self.fig is None or self.y - height < .07:
             self.new_page()
 
-    def text(self, text, size=10.5, color="#1f2937", indent=0, leading=1.55, bold=False, align="left"):
+    def text(self, text, size=10.5, color="#1f2937", indent=0, leading=1.40, bold=False, align="left"):
         prop = BOLD if bold else FONT
-        limit = 48 - indent * 2
+        limit = 52 - indent * 2
         for line in wrap_text(clean_inline(text), limit):
             h = size * leading / 842
             self.ensure(h)
