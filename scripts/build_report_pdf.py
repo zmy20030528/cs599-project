@@ -57,33 +57,36 @@ class Renderer:
 
     def _footer(self):
         if self.page > 1:
-            self.fig.text(.5, .025, f"— {self.page} —", ha="center", fontsize=9, color="#64748b", fontproperties=FONT)
+            self.fig.text(.5, .025, f"— {self.page} —", ha="center", fontsize=9, color="#000000", fontproperties=FONT)
 
     def ensure(self, height):
         if self.fig is None or self.y - height < .07:
             self.new_page()
 
-    def text(self, text, size=10.5, color="#1f2937", indent=0, leading=1.40, bold=False, align="left"):
+    def text(self, text, size=10.5, color="#000000", indent=0, leading=1.40, bold=False, align="left"):
         prop = BOLD if bold else FONT
-        limit = 52 - indent * 2
+        limit = 50 - indent * 2
         for line in wrap_text(clean_inline(text), limit):
             h = size * leading / 842
             self.ensure(h)
             x = .09 + indent * .025 if align == "left" else .5
-            self.fig.text(x, self.y, line, ha=align, va="top", fontsize=size, color=color, fontproperties=prop)
+            self.fig.text(x, self.y, line, ha=align, va="top", fontsize=size, color="#000000", fontproperties=prop)
             self.y -= h
         self.y -= .006
 
     def heading(self, level, title):
         title = re.sub(r"\s*\{[^}]+\}\s*$", "", title).strip()
-        if level == 1:
+        cover_title = title.startswith("学 生 大 作 业 报 告 书")
+        if level == 1 and not cover_title:
             if self.fig is not None and self.y < .90:
                 self.new_page()
             elif self.fig is None:
                 self.new_page()
         self.ensure(.08)
         sizes = {1: 20, 2: 15, 3: 12.5}
-        self.fig.text(.09, self.y, title, fontsize=sizes.get(level, 11), color="#17365d", fontproperties=BOLD, va="top")
+        x, align = (.5, "center") if cover_title else (.09, "left")
+        self.fig.text(x, self.y, title, fontsize=(26 if cover_title else sizes.get(level, 11)),
+                      color="#000000", fontproperties=BOLD, va="top", ha=align)
         self.headings.append((level, title, self.page))
         self.y -= {1: .065, 2: .048, 3: .04}.get(level, .035)
 
@@ -111,13 +114,14 @@ class Renderer:
         for (r, _), cell in table.get_celld().items():
             cell.get_text().set_fontproperties(BOLD if r == 0 else FONT)
             cell.set_facecolor("#dbeafe" if r == 0 else ("#f8fafc" if r % 2 else "white"))
-            cell.set_edgecolor("#94a3b8")
+            cell.get_text().set_color("#000000")
+            cell.set_edgecolor("#000000")
         self.y -= height + .025
 
     def toc(self):
         entries = self.known_toc or []
         for level, title, page in entries:
-            if title in {"封面", "目录"} or level > 3: continue
+            if title in {"封面", "目录"} or title.startswith("学 生 大 作 业") or level > 3: continue
             indent = (level - 1) * 4
             dots = "." * max(4, 48 - indent - len(title))
             self.text(" " * indent + f"{title} {dots} {page}", size=10.5 if level == 1 else 9.5,
@@ -179,7 +183,8 @@ def add_outlines(path: Path, headings):
     trailer = data[start:]
     size = int(re.search(rb"/Size\s+(\d+)", trailer).group(1))
     pages = [int(x) for x in re.findall(rb"(\d+) 0 obj\s*<<[^>]*?/Type\s*/Page(?!s)", data, re.S)]
-    entries = [(l, t, p) for l, t, p in headings if l == 1 and t not in {"封面", "目录"}]
+    entries = [(l, t, p) for l, t, p in headings
+               if l == 1 and t not in {"封面", "目录"} and not t.startswith("学 生 大 作 业")]
     if not pages or not entries: return
     outline_root = size
     item_ids = list(range(size + 1, size + 1 + len(entries)))

@@ -23,3 +23,4 @@ docs/_cs599_report_export*.docx
 docs/_cs599_report_export*.pdf
 .git-upload/
 ~$*.docx
+docs/report-template.*
