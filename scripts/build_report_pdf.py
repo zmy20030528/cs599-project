@@ -4,6 +4,7 @@ from __future__ import annotations
 import io
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -15,7 +16,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs" / "CS599_大作业报告.md"
-OUTPUT = ROOT / "docs" / "CS599_大作业报告.pdf"
+OUTPUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "docs" / "CS599_大作业报告.pdf"
 FONT_PATH = Path(r"C:\Windows\Fonts\msyh.ttc")
 BOLD_PATH = Path(r"C:\Windows\Fonts\msyhbd.ttc")
 FONT = FontProperties(fname=str(FONT_PATH))
@@ -106,14 +107,36 @@ class Renderer:
     def table(self, rows):
         cols = max(len(r) for r in rows)
         rows = [r + [""] * (cols - len(r)) for r in rows]
-        height = min(.42, .045 * len(rows) + .025)
+        if cols == 2:
+            limits = [12, 34]
+            col_widths = [.28, .72]
+        elif cols == 4:
+            limits = [8, 15, 8, 15]
+            col_widths = [.18, .32, .18, .32]
+        else:
+            limits = [max(8, int(42 / cols))] * cols
+            col_widths = [1 / cols] * cols
+        wrapped_rows = []
+        extra_lines = 0
+        for row in rows:
+            wrapped = []
+            row_lines = 1
+            for index, value in enumerate(row):
+                lines = wrap_text(clean_inline(value), limits[index])
+                row_lines = max(row_lines, len(lines))
+                wrapped.append("\n".join(lines))
+            extra_lines += row_lines - 1
+            wrapped_rows.append(wrapped)
+        height = min(.62, .045 * len(rows) + .024 * extra_lines + .025)
         self.ensure(height + .02)
         ax = self.fig.add_axes([.09, self.y - height, .82, height]); ax.axis("off")
-        table = ax.table(cellText=rows, cellLoc="center", loc="center", bbox=[0, 0, 1, 1])
+        table = ax.table(cellText=wrapped_rows, cellLoc="center", colWidths=col_widths,
+                         loc="center", bbox=[0, 0, 1, 1])
         table.auto_set_font_size(False); table.set_fontsize(8.5)
         for (r, _), cell in table.get_celld().items():
             cell.get_text().set_fontproperties(BOLD if r == 0 else FONT)
-            cell.set_facecolor("#dbeafe" if r == 0 else ("#f8fafc" if r % 2 else "white"))
+            cell.get_text().set_linespacing(1.25)
+            cell.set_facecolor("#f2f2f2" if r == 0 else "white")
             cell.get_text().set_color("#000000")
             cell.set_edgecolor("#000000")
         self.y -= height + .025
