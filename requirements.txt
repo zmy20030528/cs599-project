@@ -1,0 +1,4 @@
+langgraph>=0.4,<2
+langgraph-checkpoint-sqlite>=2,<4
+python-dotenv>=1,<2
+

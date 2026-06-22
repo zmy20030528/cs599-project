@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="660" viewBox="0 0 1500 660">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#355070"/></marker>
+    <style>.box{fill:#f7f9fc;stroke:#355070;stroke-width:3}.agent{fill:#e8f2ff;stroke:#2f6690;stroke-width:3}.store{fill:#f4ecff;stroke:#7b2cbf;stroke-width:3}.txt{font-family:'Microsoft YaHei',sans-serif;font-size:26px;fill:#172b4d;text-anchor:middle}.small{font-size:20px;fill:#506176}.line{fill:none;stroke:#355070;stroke-width:3;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1500" height="660" fill="white"/>
+  <text x="750" y="48" class="txt" font-size="34" font-weight="bold">StockMind 多智能体工作流</text>
+  <rect x="40" y="270" width="180" height="90" rx="15" class="box"/><text x="130" y="310" class="txt">用户请求</text><text x="130" y="341" class="txt small">代码 / 日期</text>
+  <rect x="290" y="270" width="210" height="90" rx="15" class="box"/><text x="395" y="310" class="txt">Fetcher</text><text x="395" y="341" class="txt small">工具调用 + 检索</text>
+  <rect x="610" y="100" width="220" height="90" rx="15" class="agent"/><text x="720" y="141" class="txt">量化分析师</text><text x="720" y="172" class="txt small">趋势 / 量价</text>
+  <rect x="610" y="270" width="220" height="90" rx="15" class="agent"/><text x="720" y="311" class="txt">舆情分析师</text><text x="720" y="342" class="txt small">事实 / 情绪</text>
+  <rect x="610" y="440" width="220" height="90" rx="15" class="agent"/><text x="720" y="481" class="txt">风险控制官</text><text x="720" y="512" class="txt small">风险 / 边界</text>
+  <rect x="950" y="270" width="210" height="90" rx="15" class="box"/><text x="1055" y="310" class="txt">CIO Agent</text><text x="1055" y="341" class="txt small">证据汇总</text>
+  <rect x="1260" y="270" width="200" height="90" rx="15" class="box"/><text x="1360" y="310" class="txt">研究报告</text><text x="1360" y="341" class="txt small">风险免责声明</text>
+  <rect x="290" y="500" width="210" height="90" rx="15" class="store"/><text x="395" y="540" class="txt">长期记忆</text><text x="395" y="571" class="txt small">检索 / 持久化</text>
+  <rect x="950" y="500" width="210" height="90" rx="15" class="store"/><text x="1055" y="540" class="txt">JSONL Trace</text><text x="1055" y="571" class="txt small">状态 / 耗时</text>
+  <path d="M220 315 H290" class="line"/><path d="M500 315 C550 315 550 145 610 145" class="line"/><path d="M500 315 H610" class="line"/><path d="M500 315 C550 315 550 485 610 485" class="line"/>
+  <path d="M830 145 C900 145 890 315 950 315" class="line"/><path d="M830 315 H950" class="line"/><path d="M830 485 C900 485 890 315 950 315" class="line"/><path d="M1160 315 H1260" class="line"/>
+  <path d="M395 500 V380" class="line"/><path d="M1055 360 V500" class="line"/><path d="M1260 360 C1210 430 550 640 500 560" class="line"/>
+  <text x="750" y="625" class="txt small">LangGraph StateGraph；无依赖环境使用等价 LocalStockGraph</text>
+</svg>
